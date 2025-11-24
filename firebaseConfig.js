@@ -1,11 +1,12 @@
-// firebase.js
+// firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 🔹 Substitua pelos dados do seu projeto Firebase
 const firebaseConfig = {
- apiKey: "AIzaSyCXSFXwS-BYi9uSufqQJgboN5hbfh95IdE",
+  apiKey: "AIzaSyCXSFXwS-BYi9uSufqQJgboN5hbfh95IdE",
   authDomain: "conectabd-b58eb.firebaseapp.com",
   projectId: "conectabd-b58eb",
   storageBucket: "conectabd-b58eb.appspot.com",
@@ -16,6 +17,9 @@ const firebaseConfig = {
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 
-// Exporta as instâncias
-export const auth = getAuth(app);
+// ✅ Configura auth com persistência para React Native
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage)
+});
+
 export const db = getFirestore(app);
