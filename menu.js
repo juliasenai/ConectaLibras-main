@@ -8,8 +8,9 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { auth } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
 import { signOut, onAuthStateChanged, reload } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useFonts } from "expo-font";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
@@ -25,18 +26,20 @@ export default function Menu({ navigation }) {
   });
 
   useEffect(() => {
+    // 🔹 Observa o usuário logado e obtém o nome salvo no Authentication
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
+          // força recarregar dados atualizados (garante pegar displayName recente)
           await reload(user);
-          console.log("✅ Usuário autenticado:", user.displayName);
-          setUserName(user.displayName || "usuário");
+          console.log("Nome do usuário logado:", user.displayName); // 🔹 TESTE
+          setUserName(user.displayName || "Usuário");
         } else {
           setUserName("Visitante");
         }
       } catch (error) {
         console.log("Erro ao buscar nome do usuário:", error);
-        setUserName("usuário");
+        setUserName("Usuário");
       } finally {
         setLoadingName(false);
       }
@@ -82,9 +85,9 @@ export default function Menu({ navigation }) {
             source={require("./assets/img/Conta.png")}
             style={styles.imgusuario}
           />
-          {/* 🔹 Exibe o nome cadastrado no Firebase Authentication */}
+          {/* 🔹 Exibe o nome buscado do Authentication */}
           <Text style={styles.tituloUsuario}>
-            Olá, {userName ? userName : "usuário"}!
+            Olá!
           </Text>
         </View>
       </View>
